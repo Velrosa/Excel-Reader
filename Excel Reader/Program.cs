@@ -25,21 +25,21 @@ namespace Excel_Reader
                 using (var cmd = con.CreateCommand())
                 {
                     con.Open();
-                    if (CheckDatabaseExists())
+                    // checks if the database is in existence.
+                    cmd.CommandText = "SELECT db_id('ExcelBook')";
+                    bool state = cmd.ExecuteScalar() != DBNull.Value;
+                    
+                    if (state)
                     {
                         cmd.CommandText = "DROP DATABASE ExcelBook";
                         cmd.ExecuteNonQuery();
                         Console.WriteLine("Removing Previous Database...");
-                        cmd.CommandText = "CREATE DATABASE ExcelBook";
-                        cmd.ExecuteNonQuery();
-                        Console.WriteLine("Database Created...");
                     }
-                    else
-                    {
-                        cmd.CommandText = "CREATE DATABASE ExcelBook";
-                        cmd.ExecuteNonQuery();
-                        Console.WriteLine("Database Created...");
-                    }
+                    
+                    cmd.CommandText = "CREATE DATABASE ExcelBook";
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine("Database Created...");
+
                 }
             }
             // Creates a table in the database to be used.
@@ -96,20 +96,6 @@ namespace Excel_Reader
             }
 
             return list;
-        }
-        //checks if there is a database by the name, returns true or false.
-        public static bool CheckDatabaseExists()
-        {
-            string databaseName = "ExcelBook";
-
-            using (var con = new SqlConnection(dbString))
-            {
-                using (var cmd = new SqlCommand($"SELECT db_id('{databaseName}')", con))
-                {
-                    con.Open();
-                    return (cmd.ExecuteScalar() != DBNull.Value);
-                }
-            }
         }
         // puts all the data into the SQL database from the excel package.
         public static void InsertDatabaseTable(List<Order> orders)
