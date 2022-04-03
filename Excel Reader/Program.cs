@@ -16,9 +16,9 @@ namespace Excel_Reader
         static string conString = ConfigurationManager.AppSettings.Get("conString");
         static string fileString = ConfigurationManager.AppSettings.Get("fileString");
         static string dbString = ConfigurationManager.AppSettings.Get("dbString");
+        
         static void Main(string[] args)
-        {
-            
+        {           
             // Checks if the Database exists, if it does remove it and create a fresh one.
             using (var con = new SqlConnection(dbString))
             {
@@ -42,7 +42,6 @@ namespace Excel_Reader
                     }
                 }
             }
-
             // Creates a table in the database to be used.
             using (var con = new SqlConnection(conString))
             {
@@ -60,7 +59,6 @@ namespace Excel_Reader
                     Console.WriteLine("Database Table Created...");
                 }
             }
-            
             //creates an ExcelPackage from the XLSX file.
             using (ExcelPackage package = new ExcelPackage(new FileInfo(fileString)))
             {
@@ -171,7 +169,6 @@ namespace Excel_Reader
             }
             return tableData;
         }
-
     }
     // Model class
     public class Order
